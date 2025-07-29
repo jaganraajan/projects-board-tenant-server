@@ -41,4 +41,8 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:email, :password, :company_name)
   end
+
+  def index
+    render json: User.all
+  end
 end

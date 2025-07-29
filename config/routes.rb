@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   # User registration and authentication endpoints
   post "/register", to: "users#register"
   get "/me", to: "users#me"
+  get "/users", to: "users#index"
 
   # Defines the root path route ("/")
   # root "posts#index"
