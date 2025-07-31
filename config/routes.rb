@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   get "/me", to: "users#me"
   get "/users", to: "users#index"
 
+  # Task CRUD endpoints
+  resources :tasks, only: [:index, :create, :show, :update, :destroy]
+
   # Defines the root path route ("/")
   # root "posts#index"
 
