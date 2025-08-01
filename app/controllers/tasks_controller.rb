@@ -59,7 +59,7 @@ class TasksController < ApplicationController
   end
 
   def task_update_params
-    params.require(:task).permit(:status)
+    params.require(:task).permit(:title, :description, :status)
   end
 
   def task_json(task)
