@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: "Fix login bug"
+  description: "The login form is not working properly"
+  status: "todo"
+  user: one
+
+two:
+  title: "Update documentation"
+  description: "Add API documentation for the new endpoints"
+  status: "in_progress"
+  user: one
+
+three:
+  title: "Design homepage"
+  description: "Create a new design for the homepage"
+  status: "done"
+  user: two
