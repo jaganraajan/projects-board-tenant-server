@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  skip_before_action :authenticate_request, only: [:register, :login]
+
   # POST /register
   def register
     user = User.new(user_params)
@@ -35,22 +37,14 @@ class UsersController < ApplicationController
   # GET /me
   def me
     # Mock authentication by accepting email parameter
-    email = params[:email]
-    
-    if email.blank?
-      render json: { error: 'Email parameter is required' }, status: :bad_request
-      return
-    end
-    
-    user = User.find_by(email: email)
-    
-    if user
-      render json: { 
-        email: user.email, 
-        company_name: user.company_name 
+    if current_user
+      render json: {
+        id: current_user.id,
+        email: current_user.email,
+        company_name: current_user.company_name
       }
     else
-      render json: { error: 'User not found' }, status: :not_found
+      render json: { error: 'Unauthorized' }, status: :unauthorized
     end
   end
 
