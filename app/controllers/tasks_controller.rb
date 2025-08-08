@@ -55,11 +55,11 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :status, :due_date)
+    params.require(:task).permit(:title, :description, :status, :due_date, :priority)
   end
 
   def task_update_params
-    params.require(:task).permit(:title, :description, :status, :due_date)
+    params.require(:task).permit(:title, :description, :status, :due_date, :priority)
   end
 
   def task_json(task)
@@ -69,6 +69,7 @@ class TasksController < ApplicationController
       description: task.description,
       status: task.status,
       due_date: task.due_date,
+      priority: task.priority,
       user_id: task.user_id,
       created_at: task.created_at,
       updated_at: task.updated_at
