@@ -38,6 +38,24 @@ class AiPriorityClassifierTest < ActiveSupport::TestCase
     assert_equal "Priority 2", priority
   end
 
+  test "should fallback gracefully when API error occurs" do
+    # Test that API errors are handled gracefully
+    # This test verifies the error handling path works correctly
+    ENV['OPENAI_API_KEY'] = 'test-key'
+    
+    # The API call will fail due to invalid key, but should fallback gracefully
+    priority = AiPriorityClassifier.classify_priority(
+      title: "Test task",
+      description: "Test description"
+    )
+    
+    # Should return fallback priority when API fails
+    assert_equal "Priority 2", priority
+    
+    # Clean up
+    ENV.delete('OPENAI_API_KEY')
+  end
+
   test "should validate priority values in valid range" do
     valid_priorities = ["Priority 1", "Priority 2", "Priority 3", "Priority 4"]
     
