@@ -28,5 +28,9 @@ module ProjectsBoardTenantServer
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # AI Priority Classification Configuration
+    # Set OPENAI_API_KEY environment variable to enable automatic task priority classification
+    # Example: export OPENAI_API_KEY=your_openai_api_key_here
   end
 end

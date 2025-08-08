@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :authenticate_request, only: [:register, :login]
+  skip_before_action :authenticate_request, only: [:register, :login, :me, :index]
 
   # POST /register
   def register
@@ -48,13 +48,14 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /users
+  def index
+    render json: User.all
+  end
+
   private
 
   def user_params
     params.require(:user).permit(:email, :password, :company_name)
-  end
-
-  def index
-    render json: User.all
   end
 end

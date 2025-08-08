@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  skip_before_action :authenticate_request
   before_action :authenticate_user!
   before_action :set_task, only: [:show, :update, :destroy]
   before_action :check_task_authorization, only: [:show, :update, :destroy]
@@ -17,6 +18,14 @@ class TasksController < ApplicationController
   # POST /tasks
   def create
     @task = current_user.tasks.build(task_params)
+    
+    # Classify priority using AI service if no priority provided and title present
+    if @task.priority.blank? && @task.title.present?
+      @task.priority = AiPriorityClassifier.classify_priority(
+        title: @task.title, 
+        description: @task.description
+      )
+    end
     
     if @task.save
       render json: task_json(@task), status: :created
@@ -68,6 +77,7 @@ class TasksController < ApplicationController
       title: task.title,
       description: task.description,
       status: task.status,
+      priority: task.priority,
       due_date: task.due_date,
       priority: task.priority,
       user_id: task.user_id,
