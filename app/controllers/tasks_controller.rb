@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  skip_before_action :authenticate_request
   before_action :authenticate_user!
   before_action :set_task, only: [:show, :update, :destroy]
   before_action :check_task_authorization, only: [:show, :update, :destroy]
