@@ -19,6 +19,14 @@ class TasksController < ApplicationController
   def create
     @task = current_user.tasks.build(task_params)
     
+    # Classify priority using AI service if no priority provided and title present
+    if @task.priority.blank? && @task.title.present?
+      @task.priority = AiPriorityClassifier.classify_priority(
+        title: @task.title, 
+        description: @task.description
+      )
+    end
+    
     if @task.save
       render json: task_json(@task), status: :created
     else
@@ -56,11 +64,11 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :status, :due_date)
+    params.require(:task).permit(:title, :description, :status, :due_date, :priority)
   end
 
   def task_update_params
-    params.require(:task).permit(:title, :description, :status, :due_date)
+    params.require(:task).permit(:title, :description, :status, :due_date, :priority)
   end
 
   def task_json(task)
@@ -69,6 +77,7 @@ class TasksController < ApplicationController
       title: task.title,
       description: task.description,
       status: task.status,
+      priority: task.priority,
       due_date: task.due_date,
       user_id: task.user_id,
       created_at: task.created_at,

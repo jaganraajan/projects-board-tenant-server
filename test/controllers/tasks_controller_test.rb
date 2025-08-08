@@ -221,4 +221,76 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     json_response = JSON.parse(response.body)
     assert_equal 2, json_response.length  # user1 has 2 tasks
   end
+
+  # Test priority classification
+  test "should assign priority when creating task without OpenAI API key" do
+    # Test fallback behavior when no API key is set
+    assert_difference('Task.count') do
+      post "/tasks", params: {
+        email: @user1.email,
+        task: {
+          title: "Urgent bug fix needed",
+          description: "Critical production issue",
+          status: "todo"
+        }
+      }
+    end
+    
+    assert_response :created
+    json_response = JSON.parse(response.body)
+    assert_equal "Urgent bug fix needed", json_response["title"]
+    assert_equal "Priority 2", json_response["priority"]  # fallback priority
+    assert json_response.key?("priority")
+  end
+
+  test "should include priority in task response" do
+    # Create a task with priority manually to test response format
+    task = @user1.tasks.create!(
+      title: "Test task", 
+      status: "todo", 
+      priority: "Priority 1"
+    )
+    
+    get "/tasks/#{task.id}", params: { email: @user1.email }
+    
+    assert_response :success
+    json_response = JSON.parse(response.body)
+    assert_equal "Priority 1", json_response["priority"]
+    assert json_response.key?("priority")
+  end
+
+  test "should validate priority values" do
+    assert_no_difference('Task.count') do
+      post "/tasks", params: {
+        email: @user1.email,
+        task: {
+          title: "Test task",
+          status: "todo",
+          priority: "Invalid Priority"
+        }
+      }
+    end
+    
+    assert_response :unprocessable_entity
+    json_response = JSON.parse(response.body)
+    assert_includes json_response["errors"], "Priority is not included in the list"
+  end
+
+  test "should allow manual priority override" do
+    assert_difference('Task.count') do
+      post "/tasks", params: {
+        email: @user1.email,
+        task: {
+          title: "Manual priority task",
+          description: "This should be overridden",
+          status: "todo",
+          priority: "Priority 3"
+        }
+      }
+    end
+    
+    assert_response :created
+    json_response = JSON.parse(response.body)
+    assert_equal "Priority 3", json_response["priority"]
+  end
 end
