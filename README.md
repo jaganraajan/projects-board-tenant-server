@@ -1,24 +1,45 @@
-# README
+# Projects Board Tenant Server
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails API backend for managing users and tasks.
 
-Things you may want to cover:
+## Ruby Version
 
-* Ruby version
+- Ruby 3.2.x (see `.ruby-version`)
 
-* System dependencies
+## System Dependencies
 
-* Configuration
+- Bundler
+- PostgreSQL (Neon for production, local or Neon for development)
+- Node.js (if using frontend locally)
 
-* Database creation
+## Frontend
 
-* Database initialization
+The recommended frontend for this API is available at:  
+[https://github.com/jaganraajan/projects-board](https://github.com/jaganraajan/projects-board)
 
-* How to run the test suite
+## API Endpoints
 
-* Services (job queues, cache servers, search engines, etc.)
+POST /register — Register a new user  
+POST /login — Login and receive JWT token  
+GET /me — Get current user info (requires JWT token)  
+GET /users — List all users (requires JWT token)  
+GET /tasks — List tasks (requires JWT token)  
+POST /tasks — Create a task (requires JWT token)  
+PATCH /tasks/:id — Update a task (requires JWT token)  
+DELETE /tasks/:id — Delete a task (requires JWT token)  
 
-* Deployment instructions
+## Deployment Instructions
 
-* ...
+Deploy to Render  
+Set DATABASE_URL in Render to your Neon Postgres connection string  
+Render will run bundle install && rails db:migrate automatically  
+
+## Environment Variables
+
+DATABASE_URL — Your Neon Postgres connection string
+
+## Notes
+
+CORS is configured for local development and production frontend domains.  
+Authentication is token-based (JWT).  
+See routes.rb for all available endpoints.
