@@ -24,7 +24,9 @@ class TasksController < ApplicationController
           title: @task.title, 
           description: @task.description
         ))
-  
+
+        @task.save # save the updated priority to the database
+
         Rails.logger.debug "Assigned priority: #{@task.priority}"
       end
       render json: task_json(@task), status: :created
