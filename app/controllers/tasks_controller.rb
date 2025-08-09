@@ -19,6 +19,14 @@ class TasksController < ApplicationController
     @task = current_user.tasks.build(task_params)
     
     if @task.save
+      if @task.title.present?
+        @task.priority = AiPriorityClassifier.classify_priority(
+          title: @task.title, 
+          description: @task.description
+        )
+  
+        Rails.logger.debug "Assigned priority: #{@task.priority}"
+      end
       render json: task_json(@task), status: :created
     else
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
