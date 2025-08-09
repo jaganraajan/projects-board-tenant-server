@@ -20,10 +20,10 @@ class TasksController < ApplicationController
     
     if @task.save
       if @task.title.present?
-        @task.priority = AiPriorityClassifier.classify_priority(
+        @task.priority = map_priority(AiPriorityClassifier.classify_priority(
           title: @task.title, 
           description: @task.description
-        )
+        ))
   
         Rails.logger.debug "Assigned priority: #{@task.priority}"
       end
@@ -60,6 +60,16 @@ class TasksController < ApplicationController
   def check_task_authorization
     return unless @task
     authorize_task_access!(@task)
+  end
+
+  def map_priority(priority)
+    case priority
+    when "Priority 1" then "Critical"
+    when "Priority 2" then "High"
+    when "Priority 3" then "Medium"
+    when "Priority 4" then "Low"
+    else priority # fallback to whatever is sent
+    end
   end
 
   def task_params
