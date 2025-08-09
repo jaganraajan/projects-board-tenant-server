@@ -37,7 +37,11 @@ class TasksController < ApplicationController
 
   # PATCH /tasks/:id
   def update
-    if @task.update(task_update_params)
+     # Map priority from params before updating
+    updated_params = task_update_params.dup
+    updated_params[:priority] = map_priority(updated_params[:priority])
+
+    if @task.update(updated_params)
       render json: task_json(@task)
     else
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
